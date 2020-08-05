@@ -296,16 +296,19 @@ bool ShouldUseGpu(CC* cc) {
     const int height = image_frame.Height();
     const int width = image_frame.Width();
     const int channels = image_frame.NumberOfChannels();
+    //devandong: the default value of 'max_num_channels_' is 3
     const int channels_preserved = std::min(channels, max_num_channels_);
     const mediapipe::ImageFormat::Format format = image_frame.Format();
 
     if (!initialized_) {
+      //devandong: which format?
       if (!(format == mediapipe::ImageFormat::SRGBA ||
             format == mediapipe::ImageFormat::SRGB ||
             format == mediapipe::ImageFormat::GRAY8 ||
             format == mediapipe::ImageFormat::VEC32F1))
         RET_CHECK_FAIL() << "Unsupported CPU input format.";
       TfLiteQuantization quant;
+      //devandong: no quantization for face mesh
       if (use_quantized_tensors_) {
         RET_CHECK(format != mediapipe::ImageFormat::VEC32F1)
             << "Only 8-bit input images are supported for quantization.";
@@ -337,6 +340,7 @@ bool ShouldUseGpu(CC* cc) {
     interpreter_->AllocateTensors();
 
     // Copy image data into tensor.
+    //devandong: no quantization
     if (use_quantized_tensors_) {
       const int width_padding =
           image_frame.WidthStep() / image_frame.ByteDepth() - width * channels;
@@ -356,6 +360,7 @@ bool ShouldUseGpu(CC* cc) {
     } else {
       float* tensor_buffer = tensor->data.f;
       RET_CHECK(tensor_buffer);
+      //devandong: which banch to be taken?
       if (image_frame.ByteDepth() == 1) {
         MP_RETURN_IF_ERROR(NormalizeImage<uint8>(image_frame, flip_vertically_,
                                                  tensor_buffer));
@@ -638,6 +643,7 @@ bool ShouldUseGpu(CC* cc) {
 
   // if zero_center, set output float range to match [-1, 1] as specified in
   // calculator proto.
+  //devandong: the default value is 'true'
   if (options.zero_center()) {
     output_range_.emplace(std::pair<float, float>(-1.0, 1.0));
   }

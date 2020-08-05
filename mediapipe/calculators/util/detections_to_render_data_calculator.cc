@@ -334,6 +334,7 @@ void DetectionsToRenderDataCalculator::AddLocationData(
                       detection.location_data().bounding_box().height(),
                       location_data_rect);
   } else {
+    //relative bounding box
     SetRectCoordinate(
         true, detection.location_data().relative_bounding_box().xmin(),
         detection.location_data().relative_bounding_box().ymin(),

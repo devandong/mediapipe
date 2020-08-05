@@ -114,6 +114,7 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
   }
 
   if (cc->Outputs().HasTag("NORM_LANDMARKS")) {
+    //devandong: this branch for face_mesh
     cc->Outputs().Tag("NORM_LANDMARKS").Set<NormalizedLandmarkList>();
   }
 
@@ -189,7 +190,8 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
   for (int ld = 0; ld < num_landmarks_; ++ld) {
     const int offset = ld * num_dimensions;
     Landmark* landmark = output_landmarks.add_landmark();
-
+    //devandong: the structure of the output tflite tensor
+    //[x, y, z,  visibility]
     if (flip_horizontally_) {
       landmark->set_x(options_.input_image_width() - raw_landmarks[offset]);
     } else {
@@ -212,6 +214,9 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
   }
 
   // Output normalized landmarks if required.
+  // devandong: the final output structure for face_mesh:
+  // [x/width, y/height, z/width/normalize_z, visibility]
+  // the default value for normalize_z is '1.0'
   if (cc->Outputs().HasTag("NORM_LANDMARKS")) {
     NormalizedLandmarkList output_norm_landmarks;
     for (int i = 0; i < output_landmarks.landmark_size(); ++i) {

@@ -78,6 +78,7 @@ class SplitVectorCalculator : public CalculatorBase {
       cc->Outputs().Index(0).Set<std::vector<T>>();
       RET_CHECK_OK(checkRangesDontOverlap(options));
     } else {
+      //devandong: this branch
       if (cc->Outputs().NumEntries() != options.ranges_size()) {
         return ::mediapipe::InvalidArgumentError(
             "The number of output streams should match the number of ranges "
@@ -99,6 +100,7 @@ class SplitVectorCalculator : public CalculatorBase {
           }
           cc->Outputs().Index(i).Set<T>();
         } else {
+          //devandong: this branch
           cc->Outputs().Index(i).Set<std::vector<T>>();
         }
       }
@@ -112,7 +114,8 @@ class SplitVectorCalculator : public CalculatorBase {
 
     const auto& options =
         cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
-
+    
+    //devandong: 'false' for face_mesh
     element_only_ = options.element_only();
     combine_outputs_ = options.combine_outputs();
 

@@ -281,6 +281,7 @@ REGISTER_CALCULATOR(LandmarksToRenderDataCalculator);
           options_.visibility_threshold(), thickness, /*normalized=*/false,
           z_min, z_max, render_data.get());
     } else {
+
       AddConnections<LandmarkList, Landmark>(
           landmarks, landmark_connections_, options_.utilize_visibility(),
           options_.visibility_threshold(), options_.connection_color(),
@@ -322,6 +323,7 @@ REGISTER_CALCULATOR(LandmarksToRenderDataCalculator);
           options_.visibility_threshold(), thickness, /*normalized=*/true,
           z_min, z_max, render_data.get());
     } else {
+      //devandong: this branch
       AddConnections<NormalizedLandmarkList, NormalizedLandmark>(
           landmarks, landmark_connections_, options_.utilize_visibility(),
           options_.visibility_threshold(), options_.connection_color(),

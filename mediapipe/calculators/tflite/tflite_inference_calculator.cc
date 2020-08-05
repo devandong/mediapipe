@@ -466,6 +466,7 @@ bool ShouldUseGpu(CC* cc) {
       std::memcpy(local_tensor_buffer, input_tensor_buffer,
                   input_tensor->bytes);
     } else {
+      //devandong: copy input data
       const float* input_tensor_buffer = input_tensor->data.f;
       float* local_tensor_buffer = interpreter_->typed_input_tensor<float>(i);
       std::memcpy(local_tensor_buffer, input_tensor_buffer,
@@ -726,6 +727,7 @@ bool ShouldUseGpu(CC* cc) {
 #if defined(__EMSCRIPTEN__) || defined(MEDIAPIPE_EDGE_TPU)
   interpreter_->SetNumThreads(1);
 #else
+  //default value is '-1'
   interpreter_->SetNumThreads(
       cc->Options<mediapipe::TfLiteInferenceCalculatorOptions>()
           .cpu_num_thread());

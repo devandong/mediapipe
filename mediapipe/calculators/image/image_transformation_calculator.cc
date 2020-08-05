@@ -377,6 +377,9 @@ REGISTER_CALCULATOR(ImageTransformationCalculator);
 
 ::mediapipe::Status ImageTransformationCalculator::RenderCpu(
     CalculatorContext* cc) {
+  
+  //devandong: default scale_mode is 'DEFAULT'
+  // default rotation_mode is 'UNKNOWN'
   cv::Mat input_mat;
   mediapipe::ImageFormat::Format format;
 
@@ -394,6 +397,7 @@ REGISTER_CALCULATOR(ImageTransformationCalculator);
   if (output_width_ > 0 && output_height_ > 0) {
     cv::Mat scaled_mat;
     if (scale_mode_ == mediapipe::ScaleMode_Mode_STRETCH) {
+      //devandong: in this branch for face_mesh
       int scale_flag =
           input_mat.cols > output_width_ && input_mat.rows > output_height_
               ? cv::INTER_AREA
@@ -441,6 +445,7 @@ REGISTER_CALCULATOR(ImageTransformationCalculator);
   cv::Mat rotated_mat;
   cv::Size rotated_size(output_width, output_height);
   if (input_mat.size() == rotated_size) {
+    //devandong: return 0 for UNKNOWN ROTATE MODE.
     const int angle = RotationModeToDegrees(rotation_);
     cv::Point2f src_center(input_mat.cols / 2.0, input_mat.rows / 2.0);
     cv::Mat rotation_mat = cv::getRotationMatrix2D(src_center, angle, 1.0);
