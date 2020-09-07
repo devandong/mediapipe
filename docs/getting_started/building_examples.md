@@ -280,16 +280,16 @@ are two options:
 2.  In the project navigator in the left sidebar, select the "Mediapipe"
     project.
 
-3.  Select the "Signing & Capabilities" tab.
+3.  Select one of the application targets, e.g. HandTrackingGpuApp.
 
-4.  Select one of the application targets, e.g. HandTrackingGpuApp.
+4.  Select the "Signing & Capabilities" tab.
 
 5.  Check "Automatically manage signing", and confirm the dialog box.
 
 6.  Select "_Your Name_ (Personal Team)" in the Team pop-up menu.
 
 7.  This set-up needs to be done once for each application you want to install.
-    Repeat steps 4-6 as needed.
+    Repeat steps 3-6 as needed.
 
 This generates provisioning profiles for each app you have selected. Now we need
 to tell Bazel to use them. We have provided a script to make this easier.
@@ -390,15 +390,15 @@ developer (yourself) is trusted.
     bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hand_tracking:hand_tracking_cpu
     ```
 
-    This will open up your webcam as long as it is connected and on. Any errors
-    is likely due to your webcam being not accessible.
-
 2.  To run the application:
 
     ```bash
     GLOG_logtostderr=1 bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_cpu \
       --calculator_graph_config_file=mediapipe/graphs/hand_tracking/hand_tracking_desktop_live.pbtxt
     ```
+
+    This will open up your webcam as long as it is connected and on. Any errors
+    is likely due to your webcam being not accessible.
 
 ### Option 2: Running on GPU
 
@@ -412,13 +412,96 @@ Note: This currently works only on Linux, and please first follow
       mediapipe/examples/desktop/hand_tracking:hand_tracking_gpu
     ```
 
-    This will open up your webcam as long as it is connected and on. Any errors
-    is likely due to your webcam being not accessible, or GPU drivers not setup
-    properly.
-
 2.  To run the application:
 
     ```bash
     GLOG_logtostderr=1 bazel-bin/mediapipe/examples/desktop/hand_tracking/hand_tracking_gpu \
       --calculator_graph_config_file=mediapipe/graphs/hand_tracking/hand_tracking_mobile.pbtxt
+    ```
+
+    This will open up your webcam as long as it is connected and on. Any errors
+    is likely due to your webcam being not accessible, or GPU drivers not setup
+    properly.
+
+## Python
+
+MediaPipe Python package is available on
+[PyPI](https://pypi.org/project/mediapipe/), and can be installed simply by `pip
+install mediapipe` on Linux and macOS, as described below in
+[Run in python interpreter](#run-in-python-interpreter) and in this
+[colab](https://mediapipe.page.link/mp-py-colab).
+
+### Run in Python interpreter
+
+Using [MediaPipe Pose](../solutions/pose.md) as an example:
+
+```bash
+# Activate a Python virtual environment.
+$ python3 -m venv mp_env && source mp_env/bin/activate
+
+# Install MediaPipe Python package
+(mp_env)$ pip install mediapipe
+
+# Run in Python interpreter
+(mp_env)$ python3
+>>> import mediapipe as mp
+>>> pose_tracker = mp.examples.UpperBodyPoseTracker()
+
+# For image input
+>>> pose_landmarks, _ = pose_tracker.run(input_file='/path/to/input/file', output_file='/path/to/output/file')
+>>> pose_landmarks, annotated_image = pose_tracker.run(input_file='/path/to/file')
+
+# For live camera input
+# (Press Esc within the output image window to stop the run or let it self terminate after 30 seconds.)
+>>> pose_tracker.run_live()
+
+# Close the tracker.
+>>> pose_tracker.close()
+```
+
+Tip: Use command `deactivate` to exit the Python virtual environment.
+
+### Building Python package from source
+
+Follow these steps only if you have local changes and need to build the Python
+package from source. Otherwise, we strongly encourage our users to simply run
+`pip install mediapipe`, more convenient and much faster.
+
+1.  Make sure that Bazel and OpenCV are correctly installed and configured for
+    MediaPipe. Please see [Installation](./install.md) for how to setup Bazel
+    and OpenCV for MediaPipe on Linux and macOS.
+
+2.  Install the following dependencies.
+
+    ```bash
+    # Debian or Ubuntu
+    $ sudo apt install python3-dev
+    $ sudo apt install python3-venv
+    $ sudo apt install -y protobuf-compiler
+    ```
+
+    ```bash
+    # macOS
+    $ brew install protobuf
+    ```
+
+3.  Activate a Python virtual environment.
+
+    ```bash
+    $ python3 -m venv mp_env && source mp_env/bin/activate
+    ```
+
+4.  In the virtual environment, go to the MediaPipe repo directory.
+
+5.  Install the required Python packages.
+
+    ```bash
+    (mp_env)mediapipe$ pip3 install -r requirements.txt
+    ```
+
+6.  Generate and install MediaPipe package.
+
+    ```bash
+    (mp_env)mediapipe$ python3 setup.py gen_protos
+    (mp_env)mediapipe$ python3 setup.py install --link-opencv
     ```

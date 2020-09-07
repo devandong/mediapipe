@@ -20,7 +20,7 @@ package(
     features = ["-layering_check"],
 )
 
-licenses(["notice"])  # Apache 2.0
+licenses(["notice"])
 
 exports_files(["LICENSE"])
 
@@ -60,6 +60,12 @@ mediapipe_proto_library(
 mediapipe_proto_library(
     name = "time_series_header_proto",
     srcs = ["time_series_header.proto"],
+    visibility = ["//visibility:public"],
+)
+
+mediapipe_proto_library(
+    name = "image_file_properties_proto",
+    srcs = ["image_file_properties.proto"],
     visibility = ["//visibility:public"],
 )
 
