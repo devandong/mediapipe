@@ -18,6 +18,8 @@
 #include "mediapipe/framework/port/ret_check.h"
 #include "tensorflow/lite/interpreter.h"
 
+#include <cstdio>
+
 namespace mediapipe {
 
 // A calculator for converting TFLite tensors from regression models into
@@ -114,7 +116,8 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
   }
 
   if (cc->Outputs().HasTag("NORM_LANDMARKS")) {
-    //devandong: this branch for face_mesh
+    // devandong: this branch for face_mesh
+    // devandong: this branch for blazepose
     cc->Outputs().Tag("NORM_LANDMARKS").Set<NormalizedLandmarkList>();
   }
 
@@ -227,6 +230,11 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
       // Scale Z coordinate as X + allow additional uniform normalization.
       norm_landmark->set_z(landmark.z() / options_.input_image_width() /
                            options_.normalize_z());
+      //devandong: print coordinates
+#define PRINT_COORDS
+#ifdef PRINT_COORDS
+      printf("landmark[%d]:(%.2f,%.2f,%.2f)\n", i, norm_landmark->x(), norm_landmark->y(), norm_landmark->z());
+#endif
       norm_landmark->set_visibility(landmark.visibility());
     }
     cc->Outputs()

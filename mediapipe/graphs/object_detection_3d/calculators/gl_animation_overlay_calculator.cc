@@ -230,6 +230,7 @@ REGISTER_CALCULATOR(GlAnimationOverlayCalculator);
   return ::mediapipe::OkStatus();
 }
 
+// devan: compute values for triangle_mesh->normals
 void GlAnimationOverlayCalculator::CalculateTriangleMeshNormals(
     int normals_len, TriangleMesh *triangle_mesh) {
   // Set triangle_mesh normals for shader usage
@@ -307,6 +308,7 @@ void GlAnimationOverlayCalculator::Normalize3f(float input[3]) {
   input[2] /= magnitude;
 }
 
+//devan: initialize perspective_matrix_
 // Helper function for initializing our perspective matrix.
 void GlAnimationOverlayCalculator::InitializePerspectiveMatrix(
     float aspect_ratio, float fov_degrees, float z_near, float z_far) {
@@ -428,6 +430,7 @@ bool GlAnimationOverlayCalculator::LoadAnimationAndroid(
 
 #else  // defined(__ANDROID__)
 
+//devan: parse the file to construct triangle_meshes_
 bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
   std::ifstream infile(filename.c_str(), std::ifstream::binary);
   if (!infile) {
@@ -446,6 +449,7 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
       break;
     }
 
+    // devan: another way to initialize object inside a vector, avoiding copy
     triangle_meshes_.emplace_back();
     TriangleMesh &triangle_mesh = triangle_meshes_.back();
 
@@ -495,6 +499,7 @@ bool GlAnimationOverlayCalculator::LoadAnimation(const std::string &filename) {
 
 #endif
 
+// devan: ompure aspect ratio and vertical_foc_degrees according to camera_parameters
 void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
     const CameraParametersProto &camera_parameters, float *aspect_ratio,
     float *vertical_fov_degrees) {
@@ -527,19 +532,21 @@ void GlAnimationOverlayCalculator::ComputeAspectRatioAndFovFromCameraParameters(
     ComputeAspectRatioAndFovFromCameraParameters(
         camera_parameters_proto, &aspect_ratio, &vertical_fov_degrees);
   } else {
+    // devan: this branch
     aspect_ratio = options.aspect_ratio();
     vertical_fov_degrees = options.vertical_fov_degrees();
   }
 
+  //devan: initialize triangle_meshes_ and mask_meshes_ according to animation_asset and mask_assret, respectively
   // when constructing projection matrix.
   InitializePerspectiveMatrix(aspect_ratio, vertical_fov_degrees,
                               options.z_clipping_plane_near(),
                               options.z_clipping_plane_far());
 
   // See what streams we have.
-  has_video_stream_ = cc->Inputs().HasTag("VIDEO");
-  has_model_matrix_stream_ = cc->Inputs().HasTag("MODEL_MATRICES");
-  has_mask_model_matrix_stream_ = cc->Inputs().HasTag("MASK_MODEL_MATRICES");
+  has_video_stream_ = cc->Inputs().HasTag("VIDEO");     //denvan: true
+  has_model_matrix_stream_ = cc->Inputs().HasTag("MODEL_MATRICES");     // devan:true
+  has_mask_model_matrix_stream_ = cc->Inputs().HasTag("MASK_MODEL_MATRICES");   //devan:true
 
   // Try to load in the animation asset in a platform-specific manner.
   const std::string &asset_name =
@@ -594,6 +601,7 @@ int GlAnimationOverlayCalculator::GetAnimationFrameIndex(Timestamp timestamp) {
   return static_cast<int>(frame_index);
 }
 
+//devan: initialize current_model_matrices using model_matrices
 void GlAnimationOverlayCalculator::LoadModelMatrices(
     const TimedModelMatrixProtoList &model_matrices,
     std::vector<ModelMatrix> *current_model_matrices) {
@@ -626,12 +634,14 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
 
     // Process model matrices, if any are being streamed in, and update our
     // list.
+    //devan: yes
     if (has_model_matrix_stream_ &&
         !cc->Inputs().Tag("MODEL_MATRICES").IsEmpty()) {
       const TimedModelMatrixProtoList &model_matrices =
           cc->Inputs().Tag("MODEL_MATRICES").Get<TimedModelMatrixProtoList>();
       LoadModelMatrices(model_matrices, &current_model_matrices_);
     }
+    // devan: yes
     if (has_mask_model_matrix_stream_ &&
         !cc->Inputs().Tag("MASK_MODEL_MATRICES").IsEmpty()) {
       const TimedModelMatrixProtoList &model_matrices =
@@ -649,6 +659,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
     GlTexture dst;
     std::unique_ptr<GpuBuffer> input_frame(nullptr);
     if (has_video_stream_ && !(cc->Inputs().Tag("VIDEO").IsEmpty())) {
+      // devan: this branch
       auto result = cc->Inputs().Tag("VIDEO").Value().Consume<GpuBuffer>();
       if (result.ok()) {
         input_frame = std::move(result).ValueOrDie();
@@ -694,6 +705,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
     GLCHECK(glClear(GL_DEPTH_BUFFER_BIT));
 
     if (has_occlusion_mask_) {
+      // devan: this branch, render all mask_model_matrices on mask_meshes_[0]
       glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
       const TriangleMesh &mask_frame = mask_meshes_.front();
       MP_RETURN_IF_ERROR(GlBind(mask_frame, mask_texture_));
@@ -708,6 +720,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
     const TriangleMesh &current_frame = triangle_meshes_[frame_index];
 
     // Load dynamic texture if it exists
+    // devan: NO
     if (cc->Inputs().HasTag("TEXTURE")) {
       const auto &input_texture =
           cc->Inputs().Tag("TEXTURE").Get<AssetTextureFormat>();
@@ -716,6 +729,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
 
     MP_RETURN_IF_ERROR(GlBind(current_frame, texture_));
     if (has_model_matrix_stream_) {
+      // devan: this branch
       // Draw objects using our latest model matrix stream packet.
       for (const ModelMatrix &model_matrix : current_model_matrices_) {
         MP_RETURN_IF_ERROR(GlRender(current_frame, model_matrix.get()));
@@ -771,6 +785,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
     // Matrix defining the currently rendered object model
     uniform mat4 modelMatrix;
 
+    ///devan: the following three variables(with attribute) should be set, but how?
     // vertex position in threespace
     attribute vec4 position;
     attribute vec3 normal;
@@ -799,6 +814,7 @@ void GlAnimationOverlayCalculator::LoadModelMatrices(
   const GLchar *frag_src = R"(
     precision mediump float;
 
+    // devan: the following three variables should be set, but how?
     varying vec2 sampleCoordinate;  // texture coordinate (0..1)
     varying vec3 vNormal;
     uniform sampler2D texture;  // texture to shade with

@@ -14,6 +14,7 @@
 
 #include <cmath>
 #include <vector>
+#include <cstdio>
 
 #include "mediapipe/calculators/util/landmark_projection_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -131,6 +132,8 @@ class LandmarkProjectionCalculator : public CalculatorBase {
         new_landmark->set_z(new_z);
         // Keep visibility as is.
         new_landmark->set_visibility(landmark.visibility());
+        // devan:
+        printf("landmark[%d]:(%f, %f, %f)\n", i, new_landmark->x(), new_landmark->y(), new_landmark->z());
       }
 
       cc->Outputs().Get(output_id).AddPacket(

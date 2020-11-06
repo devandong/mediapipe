@@ -82,6 +82,7 @@ void Box::Update() {
   bounding_box_[8] << +w, +h, +d;
 
   // Convert to world coordinate system
+  //devan: transformation is Matrix4f
   for (int i = 0; i < kNumKeypoints; ++i) {
     bounding_box_[i] =
         transformation_.topLeftCorner<3, 3>() * bounding_box_[i] +
@@ -223,12 +224,16 @@ std::pair<Vector3f, Vector3f> Box::GetGroundPlane() const {
 template <typename T>
 void Box::Fit(const std::vector<T>& vertices) {
   CHECK_EQ(vertices.size(), kNumKeypoints);
+  //devan: Vector3f, width, height, depth
   scale_.setZero();
   // The scale would remain invariant under rotation and translation.
   // We can safely estimate the scale from the oriented box.
+  // deavn: 3
   for (int axis = 0; axis < kNumberOfAxis; ++axis) {
+    //devan: 4
     for (int edge_id = 0; edge_id < kEdgesPerAxis; ++edge_id) {
       // The edges are stored in quadruples according to each axis
+      // devan: predified how the points in vertices are connected to edges
       const std::array<int, 2>& edge = edges_[axis * kEdgesPerAxis + edge_id];
       scale_[axis] += (vertices[edge[0]] - vertices[edge[1]]).norm();
     }
@@ -238,10 +243,13 @@ void Box::Fit(const std::vector<T>& vertices) {
   transformation_.setIdentity();
   Update();
 
+  // MatrixN3_RM, 9*3 float matrix, row-major
   using MatrixN3_RM = Eigen::Matrix<float, kNumKeypoints, 3, Eigen::RowMajor>;
   Eigen::Map<const MatrixN3_RM> v(vertices[0].data());
   Eigen::Map<const MatrixN3_RM> system(bounding_box_[0].data());
+  // devan: append '1' at the end of each row
   auto system_h = system.rowwise().homogeneous().eval();
+  // devan: QR decomposition
   auto system_g = system_h.colPivHouseholderQr();
   auto solution = system_g.solve(v).eval();
   transformation_.topLeftCorner<3, 4>() = solution.transpose();

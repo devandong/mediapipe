@@ -214,6 +214,7 @@ RenderAnnotation* AddPointRenderData(const Color& landmark_color,
   }
 
   auto render_data = absl::make_unique<RenderData>();
+  // devandong: false for upper_body_pose_render
   bool visualize_depth = options_.visualize_landmark_depth();
   float z_min = 0.f;
   float z_max = 0.f;
@@ -292,8 +293,10 @@ RenderAnnotation* AddPointRenderData(const Color& landmark_color,
     for (int i = 0; i < landmarks.landmark_size(); ++i) {
       const NormalizedLandmark& landmark = landmarks.landmark(i);
 
+      printf("=== %d: %f ===\n", i, landmark.visibility());
       if (options_.utilize_visibility() &&
           landmark.visibility() < options_.visibility_threshold()) {
+            printf("===== landmarks[%d] is invisible =====\n", i);
         continue;
       }
 

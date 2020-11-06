@@ -117,6 +117,7 @@ def process_profile(profile_path, our_app_id_re):
     return
   match = our_app_id_re.match(app_id)
   if not match:
+    print(f"Not match our app id:%s"%(app_id))
     return
   app_name = match.group(1)
   app_dir_name = app_name.lower()

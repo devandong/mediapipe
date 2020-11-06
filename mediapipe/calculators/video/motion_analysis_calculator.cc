@@ -254,16 +254,27 @@ REGISTER_CALCULATOR(MotionAnalysisCalculator);
       tool::RetrieveOptions(cc->Options<MotionAnalysisCalculatorOptions>(),
                             cc->InputSidePackets(), kOptionsTag);
 
+  // true
   video_input_ = cc->Inputs().HasTag("VIDEO");
+  // false
   selection_input_ = cc->Inputs().HasTag("SELECTION");
+  // true
   region_flow_feature_output_ = cc->Outputs().HasTag("FLOW");
+  // true
   camera_motion_output_ = cc->Outputs().HasTag("CAMERA");
+  // false
   saliency_output_ = cc->Outputs().HasTag("SALIENCY");
+  // false
   visualize_output_ = cc->Outputs().HasTag("VIZ");
+  // false
   dense_foreground_output_ = cc->Outputs().HasTag("DENSE_FG");
+  // false
   video_output_ = cc->Outputs().HasTag("VIDEO_OUT");
+  // false
   grayscale_output_ = cc->Outputs().HasTag("GRAY_VIDEO_OUT");
+  // false
   csv_file_input_ = cc->InputSidePackets().HasTag("CSV_FILE");
+  // false
   hybrid_meta_analysis_ = options_.meta_analysis() ==
                           MotionAnalysisCalculatorOptions::META_ANALYSIS_HYBRID;
 
@@ -329,6 +340,7 @@ REGISTER_CALCULATOR(MotionAnalysisCalculator);
   // Get video header from video or selection input if present.
   const VideoHeader* video_header = nullptr;
   if (video_input_ && !cc->Inputs().Tag("VIDEO").Header().IsEmpty()) {
+    // devan: 1) make sure in this branch; 2) what's the header?
     video_header = &(cc->Inputs().Tag("VIDEO").Header().Get<VideoHeader>());
   } else if (selection_input_ &&
              !cc->Inputs().Tag("SELECTION").Header().IsEmpty()) {
@@ -338,6 +350,7 @@ REGISTER_CALCULATOR(MotionAnalysisCalculator);
                     "expecting video headers are likely to fail.";
   }
 
+  // false
   with_saliency_ = options_.analysis_options().compute_motion_saliency();
   // Force computation of saliency if requested as output.
   if (cc->Outputs().HasTag("SALIENCY")) {
@@ -350,6 +363,7 @@ REGISTER_CALCULATOR(MotionAnalysisCalculator);
     }
   }
 
+  // false
   if (options_.bypass_mode()) {
     cc->SetOffset(TimestampDiff(0));
   }
@@ -496,6 +510,7 @@ REGISTER_CALCULATOR(MotionAnalysisCalculator);
 
   if (use_frame) {
     if (!selection_input_) {
+      // take this branch
       const cv::Mat input_view =
           formats::MatView(&video_stream->Get<ImageFrame>());
       if (hybrid_meta_analysis_) {
@@ -688,6 +703,9 @@ void MotionAnalysisCalculator::OutputMotionAnalyzedFrames(
   }
 }
 
+// devan: in sneaker3d demo, this method does:
+// 1) set frame_width_ and frame_height_;
+// 2) set image_format in analysis_option::flow_options
 ::mediapipe::Status MotionAnalysisCalculator::InitOnProcess(
     InputStream* video_stream, InputStream* selection_stream) {
   if (video_stream) {
@@ -732,6 +750,7 @@ void MotionAnalysisCalculator::OutputMotionAnalyzedFrames(
     // be computed on higher resolution as specifed by the downsample scale.
     if (region_options->downsample_mode() ==
         RegionFlowComputationOptions::DOWNSAMPLE_TO_INPUT_SIZE) {
+      // devan: use default value, 2.0
       const float scale = region_options->downsample_factor();
       frame_width_ = static_cast<int>(std::round(frame_width_ * scale));
       frame_height_ = static_cast<int>(std::round(frame_height_ * scale));

@@ -96,6 +96,10 @@ REGISTER_CALCULATOR(AlignmentPointsRectsCalculator);
   rect->set_width(box_size / image_size->first);
   rect->set_height(box_size / image_size->second);
 
+  //devan:
+  std::cout<<"PRE center:(x, y)" << rect->x_center()<<","<<rect->y_center()<<std::endl;
+  std::cout<<"PRE (height, width))" << rect->height()<<","<<rect->width()<<std::endl;
+
   return ::mediapipe::OkStatus();
 }
 

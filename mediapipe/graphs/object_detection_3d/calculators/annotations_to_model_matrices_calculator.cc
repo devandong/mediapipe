@@ -190,7 +190,10 @@ AnnotationsToModelMatricesCalculator::GetModelMatricesForAnnotations(
     // clang-format on
 
     // Re-scale the CAD model to the scale of the estimated bounding box.
+    // devan: element-wise product between matrix
     const Eigen::Vector3f scale = model_scale_.cwiseProduct(estimated_scale);
+    // devan: scale.homogeneous() append '1' at the end. So the following computations is:
+    // each column of model_transformation_ mulplies with [scale, 1] elemenwisely.
     const Matrix4fRM model =
         model_transformation_.array().colwise() * scale.homogeneous().array();
 

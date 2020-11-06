@@ -94,13 +94,14 @@ class SplitVectorCalculator : public CalculatorBase {
               "than the end index.");
         }
         if (options.element_only()) {
+          // devandong: this branch for blazepose detection
           if (options.ranges(i).end() - options.ranges(i).begin() != 1) {
             return ::mediapipe::InvalidArgumentError(
                 "Since element_only is true, all ranges should be of size 1.");
           }
           cc->Outputs().Index(i).Set<T>();
         } else {
-          //devandong: this branch
+          //devandong: this branch for facemesh
           cc->Outputs().Index(i).Set<std::vector<T>>();
         }
       }
@@ -115,7 +116,8 @@ class SplitVectorCalculator : public CalculatorBase {
     const auto& options =
         cc->Options<::mediapipe::SplitVectorCalculatorOptions>();
     
-    //devandong: 'false' for face_mesh
+    // devandong: 'false' for face_mesh and blazepose landmark
+    // devandong: 'true' for blazepose detection
     element_only_ = options.element_only();
     combine_outputs_ = options.combine_outputs();
 

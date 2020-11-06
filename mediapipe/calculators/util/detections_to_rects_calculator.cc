@@ -122,6 +122,7 @@ constexpr char kNormRectsTag[] = "NORM_RECTS";
     if (options_.has_rotation_vector_target_angle()) {
       target_angle_ = options_.rotation_vector_target_angle();
     } else {
+      // 0.5
       target_angle_ =
           M_PI * options_.rotation_vector_target_angle_degrees() / 180.f;
     }
@@ -194,6 +195,7 @@ constexpr char kNormRectsTag[] = "NORM_RECTS";
   }
   if (cc->Outputs().HasTag(kNormRectTag)) {
     auto output_rect = absl::make_unique<NormalizedRect>();
+    // devandong: subclass implementation
     MP_RETURN_IF_ERROR(DetectionToNormalizedRect(detections[0], detection_spec,
                                                  output_rect.get()));
     if (rotate_) {
@@ -201,6 +203,7 @@ constexpr char kNormRectsTag[] = "NORM_RECTS";
       MP_RETURN_IF_ERROR(
           ComputeRotation(detections[0], detection_spec, &rotation));
       output_rect->set_rotation(rotation);
+      std::cout<<"PRE rotation:"<<output_rect->rotation()<<std::endl;
     }
     cc->Outputs()
         .Tag(kNormRectTag)

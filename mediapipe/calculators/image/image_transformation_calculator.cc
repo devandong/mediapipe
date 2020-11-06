@@ -405,6 +405,8 @@ REGISTER_CALCULATOR(ImageTransformationCalculator);
       cv::resize(input_mat, scaled_mat, cv::Size(output_width_, output_height_),
                  0, 0, scale_flag);
     } else {
+      // devandong: this branch for sneaker_detection3d
+      // devandong: this branch for blazepose detection&landmarks
       const float scale =
           std::min(static_cast<float>(output_width_) / input_width,
                    static_cast<float>(output_height_) / input_height);
@@ -421,6 +423,7 @@ REGISTER_CALCULATOR(ImageTransformationCalculator);
         const int right = output_width_ - target_width - left;
         cv::copyMakeBorder(intermediate_mat, scaled_mat, top, bottom, left,
                            right,
+                           // devandong: default is true
                            options_.constant_padding() ? cv::BORDER_CONSTANT
                                                        : cv::BORDER_REPLICATE);
       } else {

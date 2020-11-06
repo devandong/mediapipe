@@ -455,6 +455,7 @@ REGISTER_CALCULATOR(AnnotationOverlayCalculator);
 
     image_mat = absl::make_unique<cv::Mat>(
         input_frame.Height(), input_frame.Width(), target_mat_type);
+    // devandong: duplicating pixel values for 3 channels whehn input frame is GRAY
     if (input_frame.Format() == ImageFormat::GRAY8) {
       const int target_num_channels =
           ImageFrame::NumberOfChannelsForFormat(*target_format);

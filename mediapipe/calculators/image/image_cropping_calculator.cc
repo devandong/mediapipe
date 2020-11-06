@@ -15,6 +15,7 @@
 #include "mediapipe/calculators/image/image_cropping_calculator.h"
 
 #include <cmath>
+#include <iostream>
 
 #include "mediapipe/framework/formats/image_frame.h"
 #include "mediapipe/framework/formats/image_frame_opencv.h"
@@ -257,11 +258,52 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
   cv::Mat projection_matrix =
       cv::getPerspectiveTransform(src_points, dst_points);
   cv::Mat cropped_image;
+#define  USE_WARPAFFINE
+#ifdef USE_WARPAFFINE
+   // try to compute the warpAffine matrix manually
+   cv::Mat tryMat(2, 3, CV_32F);
+   tryMat.at<float>(0, 0) = scale * std::cos(rotation);
+   tryMat.at<float>(0, 1) = scale * std::sin(rotation);
+   tryMat.at<float>(0, 2) = projection_matrix.at<double>(0, 2);
+   tryMat.at<float>(1, 0) = -scale * std::sin(rotation);
+   tryMat.at<float>(1, 1) = scale * std::cos(rotation);
+   tryMat.at<float>(1, 2) =  projection_matrix.at<double>(1, 2);
+   // align the center point
+   float offset_x = output_width / 2.0  - (rect_center_x * tryMat.at<float>(0, 0) +  rect_center_y * tryMat.at<float>(0, 1));
+   float offset_y = output_height / 2.0 - (rect_center_x * tryMat.at<float>(1, 0) +  rect_center_y * tryMat.at<float>(1, 1));
+   tryMat.at<float>(0, 2) = offset_x;
+   tryMat.at<float>(1, 2) = offset_y;
+  std::cout << "===== manually matrix: ===== "<<std::endl;
+    std::cout << tryMat << std::endl;
+    std::cout << "===== manually matrix: ===== "<<std::endl;
+  // devan: as the last line of projection_matrix is quite close to (0, 0, 1),
+  // we try to use warpAffine to replace warpPerspective
+  //cv::Mat warpAffineMatrix(2, 3, CV_32F);
+  //warpAffineMatrix.at<float>(0, 0) = projection_matrix.at<double>(0, 0);
+  //warpAffineMatrix.at<float>(0, 1) = projection_matrix.at<double>(0, 1);
+  //warpAffineMatrix.at<float>(0, 2) = projection_matrix.at<double>(0, 2);
+  //warpAffineMatrix.at<float>(1, 0) = projection_matrix.at<double>(1, 0);
+  //warpAffineMatrix.at<float>(1, 1) = projection_matrix.at<double>(1, 1);
+ // warpAffineMatrix.at<float>(1, 2) = projection_matrix.at<double>(1, 2);
+ // std::cout << "===== warpAffine matrix: ===== "<<std::endl;
+ // std::cout << warpAffineMatrix << std::endl;
+ // std::cout << "===== warpAffine matrix: ===== "<<std::endl;
+  cv::warpAffine(input_mat, cropped_image, tryMat, 
+                       cv::Size(output_width, output_height),
+                       CV_INTER_LINEAR,
+                       CV_HAL_BORDER_CONSTANT);
+#else
   cv::warpPerspective(input_mat, cropped_image, projection_matrix,
                       cv::Size(output_width, output_height),
                       /* flags = */ 0,
                       /* borderMode = */ border_mode);
-
+#endif
+  projection_matrix.at<double>(2, 0) = 0;
+  projection_matrix.at<double>(2, 1) = 0;
+  projection_matrix.at<double>(2, 2) = 1;
+      std::cout << "===== perpective matrix: ===== "<<std::endl;
+    std::cout << projection_matrix << std::endl;
+    std::cout << "===== perpective matrix: ===== "<<std::endl;
   std::unique_ptr<ImageFrame> output_frame(new ImageFrame(
       input_img.Format(), cropped_image.cols, cropped_image.rows));
   cv::Mat output_mat = formats::MatView(output_frame.get());

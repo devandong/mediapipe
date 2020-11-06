@@ -28,6 +28,7 @@
 
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/detection.pb.h"
@@ -141,6 +142,19 @@ class DetectionLetterboxRemovalCalculator : public CalculatorBase {
       }
 
       output_detections->emplace_back(new_detection);
+      //devan: print output
+      std::cout<<"(xmin,ymin,height,width):"<<relative_bbox->xmin()<<","<<relative_bbox->ymin()<<",";
+      std::cout<<relative_bbox->height()<<","<<relative_bbox->width()<<std::endl;
+      for (int i = 0;
+           i < new_detection.location_data().relative_keypoints_size();
+           ++i) {
+        const auto keypoint =
+            new_detection.location_data().relative_keypoints(
+                i);
+        auto x = keypoint.x();
+        auto y = keypoint.y();
+        std::cout<<"keypoint:"<<i<<"(x,y):"<<x<<","<<y<<std::endl;
+      }
     }
 
     cc->Outputs()

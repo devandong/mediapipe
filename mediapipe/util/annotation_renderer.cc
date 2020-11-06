@@ -67,6 +67,7 @@ cv::RotatedRect RectangleToOpenCVRotatedRect(int left, int top, int right,
       cv::Size2f(right - left, bottom - top), rotation / M_PI * 180.f);
 }
 
+//TODO: devandong: what's the difference between line and gradient_line?
 void cv_line2(cv::Mat& img, const cv::Point& start, const cv::Point& end,
               const cv::Scalar& color1, const cv::Scalar& color2,
               int thickness) {

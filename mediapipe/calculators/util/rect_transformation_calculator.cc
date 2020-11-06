@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <cmath>
+#include <iostream>
 
 #include "mediapipe/calculators/util/rect_transformation_calculator.pb.h"
 #include "mediapipe/framework/calculator_framework.h"
@@ -210,12 +211,15 @@ void RectTransformationCalculator::TransformNormalizedRect(NormalizedRect* rect,
   float rotation = rect->rotation();
 
   if (options_.has_rotation() || options_.has_rotation_degrees()) {
+    printf("==== funck4 ====\n");
     rotation = ComputeNewRotation(rotation);
   }
   if (rotation == 0.f) {
+     printf("==== funck5: %.4f, %.4f ====\n", options_.shift_x(),options_.shift_y());
     rect->set_x_center(rect->x_center() + width * options_.shift_x());
     rect->set_y_center(rect->y_center() + height * options_.shift_y());
   } else {
+      printf("==== funck6: %.4f, %.4f ====\n", options_.shift_x(),options_.shift_y());
     const float x_shift =
         (image_width * width * options_.shift_x() * std::cos(rotation) -
          image_height * height * options_.shift_y() * std::sin(rotation)) /
@@ -241,6 +245,11 @@ void RectTransformationCalculator::TransformNormalizedRect(NormalizedRect* rect,
   }
   rect->set_width(width * options_.scale_x());
   rect->set_height(height * options_.scale_y());
+  //devan:
+  std::cout<<"center:(x, y)" << rect->x_center()<<","<<rect->y_center()<<std::endl;
+  std::cout<<"(height, width)" << height<<","<< width<<std::endl;
+  std::cout<<"(scaled_height, scaled_width))" << rect->height()<<","<<rect->width()<<std::endl;
+  std::cout<<"rotation:"<<rotation<<std::endl;
 }
 
 }  // namespace mediapipe
