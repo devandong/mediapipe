@@ -947,6 +947,7 @@ cc_library(
         ],
     }),
     visibility = [
+        "//mediapipe/calculators:__subpackages__",
         "//mediapipe/framework:__subpackages__",
         "//mediapipe/framework/port:__pkg__",
         "//mediapipe/util:__subpackages__",
@@ -1102,6 +1103,19 @@ cc_library(
         "//mediapipe/framework/tool:type_util",
         "@com_google_absl//absl/base:core_headers",
         "@com_google_absl//absl/synchronization",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "basic_types_registration",
+    srcs = ["basic_types_registration.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":type_map",
+        "//mediapipe/framework/port:integral_types",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
     ],
     alwayslink = 1,
 )

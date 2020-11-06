@@ -134,6 +134,8 @@ class LandmarkProjectionCalculator : public CalculatorBase {
         new_landmark->set_visibility(landmark.visibility());
         // devan:
         printf("landmark[%d]:(%f, %f, %f)\n", i, new_landmark->x(), new_landmark->y(), new_landmark->z());
+        // Keep presence as is.
+        new_landmark->set_presence(landmark.presence());
       }
 
       cc->Outputs().Get(output_id).AddPacket(

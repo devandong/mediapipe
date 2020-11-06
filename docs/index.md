@@ -8,15 +8,14 @@ nav_order: 1
 
 --------------------------------------------------------------------------------
 
-## Cross-platform ML solutions made simple
+## Live ML anywhere
 
-[MediaPipe](https://google.github.io/mediapipe/) is the simplest way for researchers
-and developers to build world-class ML solutions and applications for mobile,
-desktop/cloud, web and IoT devices.
+[MediaPipe](https://google.github.io/mediapipe/) offers cross-platform, customizable
+ML solutions for live and streaming media.
 
 ![accelerated.png](images/accelerated_small.png)                                                               | ![cross_platform.png](images/cross_platform_small.png)
 :------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------:
-***End-to-End acceleration***: *built-in fast ML inference and processing accelerated even on common hardware* | ***Build one, deploy anywhere***: *Unified solution works across Android, iOS, desktop/cloud, web and IoT*
+***End-to-End acceleration***: *Built-in fast ML inference and processing accelerated even on common hardware* | ***Build once, deploy anywhere***: *Unified solution works across Android, iOS, desktop/cloud, web and IoT*
 ![ready_to_use.png](images/ready_to_use_small.png)                                                             | ![open_source.png](images/open_source_small.png)
 ***Ready-to-use solutions***: *Cutting-edge ML solutions demonstrating full power of the framework*            | ***Free and open source***: *Framework and solutions both under Apache 2.0, fully extensible and customizable*
 
@@ -36,9 +35,9 @@ Object Detection                                                                
 []()                                                                                      | Android | iOS | Desktop | Python | Web | Coral
 :---------------------------------------------------------------------------------------- | :-----: | :-: | :-----: | :----: | :-: | :---:
 [Face Detection](https://google.github.io/mediapipe/solutions/face_detection)                   | ✅       | ✅   | ✅       |        | ✅   | ✅
-[Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh)                             | ✅       | ✅   | ✅       |        |     |
+[Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh)                             | ✅       | ✅   | ✅       | ✅      |     |
 [Iris](https://google.github.io/mediapipe/solutions/iris)                                       | ✅       | ✅   | ✅       |        | ✅   |
-[Hands](https://google.github.io/mediapipe/solutions/hands)                                     | ✅       | ✅   | ✅       |        | ✅   |
+[Hands](https://google.github.io/mediapipe/solutions/hands)                                     | ✅       | ✅   | ✅       | ✅      | ✅   |
 [Pose](https://google.github.io/mediapipe/solutions/pose)                                       | ✅       | ✅   | ✅       | ✅      | ✅   |
 [Hair Segmentation](https://google.github.io/mediapipe/solutions/hair_segmentation)             | ✅       |     | ✅       |        | ✅   |
 [Object Detection](https://google.github.io/mediapipe/solutions/object_detection)               | ✅       | ✅   | ✅       |        |     | ✅
@@ -49,6 +48,23 @@ Object Detection                                                                
 [AutoFlip](https://google.github.io/mediapipe/solutions/autoflip)                               |         |     | ✅       |        |     |
 [MediaSequence](https://google.github.io/mediapipe/solutions/media_sequence)                    |         |     | ✅       |        |     |
 [YouTube 8M](https://google.github.io/mediapipe/solutions/youtube_8m)                           |         |     | ✅       |        |     |
+
+See also
+[MediaPipe Models and Model Cards](https://google.github.io/mediapipe/solutions/models)
+for ML models released in MediaPipe.
+
+## MediaPipe in Python
+
+MediaPipe Python package is available on
+[PyPI](https://pypi.org/project/mediapipe/), and can be installed simply by `pip
+install mediapipe` on Linux and macOS, as described in:
+
+*   [MediaPipe Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh#python)
+    ([colab](https://mediapipe.page.link/face_mesh_py_colab))
+*   [MediaPipe Hands](https://google.github.io/mediapipe/solutions/hands#python)
+    ([colab](https://mediapipe.page.link/hands_py_colab))
+*   [MediaPipe Pose](https://google.github.io/mediapipe/solutions/pose#python)
+    ([colab](https://mediapipe.page.link/pose_py_colab))
 
 ## MediaPipe on the Web
 
@@ -89,7 +105,9 @@ run code search using
 
 ## Publications
 
-*   [Instant Motion Tracking With MediaPipe](https://mediapipe.page.link/instant-motion-tracking-blog)
+*   [MediaPipe 3D Face Transform](https://developers.googleblog.com/2020/09/mediapipe-3d-face-transform.html)
+    in Google Developers Blog
+*   [Instant Motion Tracking With MediaPipe](https://developers.googleblog.com/2020/08/instant-motion-tracking-with-mediapipe.html)
     in Google Developers Blog
 *   [BlazePose - On-device Real-time Body Pose Tracking](https://ai.googleblog.com/2020/08/on-device-real-time-body-pose-tracking.html)
     in Google AI Blog

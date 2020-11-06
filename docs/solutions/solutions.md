@@ -19,9 +19,9 @@ has_toc: false
 []()                                                                                      | Android | iOS | Desktop | Python | Web | Coral
 :---------------------------------------------------------------------------------------- | :-----: | :-: | :-----: | :----: | :-: | :---:
 [Face Detection](https://google.github.io/mediapipe/solutions/face_detection)                   | ✅       | ✅   | ✅       |        | ✅   | ✅
-[Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh)                             | ✅       | ✅   | ✅       |        |     |
+[Face Mesh](https://google.github.io/mediapipe/solutions/face_mesh)                             | ✅       | ✅   | ✅       | ✅      |     |
 [Iris](https://google.github.io/mediapipe/solutions/iris)                                       | ✅       | ✅   | ✅       |        | ✅   |
-[Hands](https://google.github.io/mediapipe/solutions/hands)                                     | ✅       | ✅   | ✅       |        | ✅   |
+[Hands](https://google.github.io/mediapipe/solutions/hands)                                     | ✅       | ✅   | ✅       | ✅      | ✅   |
 [Pose](https://google.github.io/mediapipe/solutions/pose)                                       | ✅       | ✅   | ✅       | ✅      | ✅   |
 [Hair Segmentation](https://google.github.io/mediapipe/solutions/hair_segmentation)             | ✅       |     | ✅       |        | ✅   |
 [Object Detection](https://google.github.io/mediapipe/solutions/object_detection)               | ✅       | ✅   | ✅       |        |     | ✅
@@ -32,3 +32,7 @@ has_toc: false
 [AutoFlip](https://google.github.io/mediapipe/solutions/autoflip)                               |         |     | ✅       |        |     |
 [MediaSequence](https://google.github.io/mediapipe/solutions/media_sequence)                    |         |     | ✅       |        |     |
 [YouTube 8M](https://google.github.io/mediapipe/solutions/youtube_8m)                           |         |     | ✅       |        |     |
+
+See also
+[MediaPipe Models and Model Cards](https://google.github.io/mediapipe/solutions/models)
+for ML models released in MediaPipe.

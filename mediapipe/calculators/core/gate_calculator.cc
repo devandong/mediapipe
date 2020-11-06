@@ -1,4 +1,4 @@
-// Copyright 2019 The MediaPipe Authors.
+// Copyright 2019-2020 The MediaPipe Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -187,6 +187,14 @@ class GateCalculator : public CalculatorBase {
     last_gate_state_ = new_gate_state;
 
     if (!allow) {
+      // Close the output streams if the gate will be permanently closed.
+      // Prevents buffering in calculators whose parents do no use SetOffset.
+      for (int i = 0; i < num_data_streams_; ++i) {
+        if (!cc->Outputs().Get("", i).IsClosed() &&
+            use_side_packet_for_allow_disallow_) {
+          cc->Outputs().Get("", i).Close();
+        }
+      }
       return ::mediapipe::OkStatus();
     }
 

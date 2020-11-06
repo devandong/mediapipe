@@ -23,9 +23,9 @@
 namespace mediapipe {
 
 // A calculator for converting TFLite tensors from regression models into
-// landmarks. Note that if the landmarks in the tensor has more than 4
-// dimensions, only the first 4 dimensions will be converted to
-// [x,y,z, visibility].
+// landmarks. Note that if the landmarks in the tensor has more than 5
+// dimensions, only the first 5 dimensions will be converted to
+// [x,y,z, visibility, presence].
 //
 // Input:
 //  TENSORS - Vector of TfLiteTensor of type kTfLiteFloat32. Only the first
@@ -214,6 +214,9 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
     if (num_dimensions > 3) {
       landmark->set_visibility(raw_landmarks[offset + 3]);
     }
+    if (num_dimensions > 4) {
+      landmark->set_presence(raw_landmarks[offset + 4]);
+    }
   }
 
   // Output normalized landmarks if required.
@@ -236,6 +239,7 @@ REGISTER_CALCULATOR(TfLiteTensorsToLandmarksCalculator);
       printf("landmark[%d]:(%.2f,%.2f,%.2f)\n", i, norm_landmark->x(), norm_landmark->y(), norm_landmark->z());
 #endif
       norm_landmark->set_visibility(landmark.visibility());
+      norm_landmark->set_presence(landmark.presence());
     }
     cc->Outputs()
         .Tag("NORM_LANDMARKS")
